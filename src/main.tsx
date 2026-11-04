@@ -18,6 +18,7 @@ import FaqPage from "./pages/FaqPage";
 import GroupPage from "./pages/GroupPage";
 import HomePage from "./pages/HomePage";
 import NotFoundPage from "./pages/NotFoundPage";
+import PitchPage from "./pages/PitchPage";
 import ProfilePage from "./pages/ProfilePage";
 import RegistrationPage from "./pages/RegistrationPage";
 import SolutionDetailPage from "./pages/SolutionDetailPage";
@@ -49,6 +50,7 @@ const router = createBrowserRouter([
       },
       { path: "desafios", element: <ChallengesPage /> },
       { path: "integrantes", element: <TeamPage /> },
+      { path: "pitch", element: <PitchPage /> },
       { path: "solucao", element: <SolutionPage /> },
       { path: "solucao/:slug", element: <SolutionDetailPage /> },
       { path: "avatar", element: <AvatarPage /> },

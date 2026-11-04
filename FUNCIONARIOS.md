@@ -2,6 +2,10 @@
 
 Execute `npm install` e `npm run dev`, depois abra `/acesso-funcionario` ou use o link **Acesso Funcionário** do menu.
 
+O desenvolvimento usa a porta fixa `5173`. Mantenha o processo do Vite em execução ao usar `http://localhost:5173`; se a porta já estiver ocupada, o Vite avisa em vez de abrir outra porta silenciosamente. Uma aba aberta não mantém o servidor ativo. Após reiniciar o servidor ou atualizar o código, recarregue a página. Falhas de conexão são informadas separadamente de credenciais incorretas e não provocam repetição automática do login.
+
+`output/` e arquivos ZIP ficam fora do monitoramento do Vite. Isso evita que o bloqueio temporário do pacote pelo Windows/OneDrive derrube o servidor com erro `EBUSY` durante `npm run package:delivery`.
+
 A senha compartilhada é definida em `SOULUP_SENHA_FUNCIONARIOS` no serviço Python do Render. Em 04/11/2026, `12345678` foi aceita pela API publicada. A tela envia a senha ao servidor Node, que chama `POST /auth/funcionarios` no Python e confirma o perfil em `GET /auth/me`. O token Bearer fica em cookie HttpOnly por até uma hora; não é exposto ao JavaScript do navegador. `/gestao` exige essa mesma sessão e o botão de saída revoga o token no Python.
 
 A antiga validação Node de `123456789` foi removida. Erros de conexão/configuração do Python são apresentados como indisponibilidade, sem aceitar senha local nem informar senha incorreta quando o serviço não respondeu.

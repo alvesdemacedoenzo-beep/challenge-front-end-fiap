@@ -19,15 +19,18 @@ export default function EmployeeGate({ children }: { children: ReactNode }) {
   useEffect(() => {
     let active = true;
     setLoading(true);
+    setError("");
     checkEmployeeAccess()
       .then((allowed) => {
         if (active) setAuthenticated(allowed);
       })
-      .catch(() => {
+      .catch((cause: unknown) => {
         if (active) {
           setAuthenticated(false);
           setError(
-            "Não foi possível verificar o acesso. Tente entrar novamente.",
+            cause instanceof Error
+              ? cause.message
+              : "Não foi possível verificar o acesso. Tente entrar novamente.",
           );
         }
       })
@@ -124,7 +127,10 @@ export default function EmployeeGate({ children }: { children: ReactNode }) {
           required
           minLength={8}
           value={password}
-          onChange={(event) => setPassword(event.target.value)}
+          onChange={(event) => {
+            setPassword(event.target.value);
+            setError("");
+          }}
           aria-invalid={!!error}
           aria-describedby={error ? "employee-error" : "employee-password-help"}
           className="w-full rounded-xl border border-white/20 bg-forest px-4 py-3 text-white outline-none focus:border-leaf"

@@ -60,7 +60,14 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [employeeApi, react(), tailwindcss()],
-    server: { proxy },
+    server: {
+      port: 5173,
+      strictPort: true,
+      // O ZIP pode ficar bloqueado pelo Windows/OneDrive durante a geração.
+      // Artefatos da entrega não precisam participar do recarregamento do site.
+      watch: { ignored: ["**/output/**", "**/*.zip"] },
+      proxy,
+    },
     preview: { proxy },
   };
 });

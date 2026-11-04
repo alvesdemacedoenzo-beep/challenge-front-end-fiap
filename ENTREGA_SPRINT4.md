@@ -84,6 +84,10 @@ Na consulta online posterior, `/usuarios`, `/grupos` e `/desafios` Java excedera
 
 Atualização de autenticação em 04/11/2026: a senha de funcionário é validada pelo Python em `/auth/funcionarios`. A antiga senha local de nove dígitos foi removida. `12345678` foi aceita pela API publicada; no navegador local, também passaram login real, recarga da sessão e logout. Tokens Bearer são mantidos em cookies HttpOnly distintos para conta e funcionário, com confirmação em `/auth/me` e revogação no Python. Os testes automatizados passaram para **34**. Essa validação de autenticação não certifica os CRUDs Java ou o deploy atualizado da Vercel.
 
+Verificação posterior de conexão local: o Vite estava sem processo na porta 5173 e foi iniciado novamente. A tela trata falhas de rede sem expor `Failed to fetch`, distingue sessão expirada de indisponibilidade e só aceita confirmação explícita de autenticação. No navegador em `http://localhost:5173`, passaram falhas simuladas na consulta inicial e no login, recuperação com Python real, recarga e logout, com um único POST real de login. **38 testes e build passaram.**
+
+Na geração do pacote com o Vite ativo, foi reproduzida a causa da queda: `EBUSY` ao monitorar `output/Soul-Up-Entrega-4.zip` no Windows. A configuração foi corrigida para ignorar `output/` e ZIPs no watcher do Vite, mantendo a porta 5173 fixa.
+
 Aliases agrupados por integrante. Contagem não comprova, isoladamente, qualidade das contribuições.
 
 | Integrante | Com merges | Sem merges |

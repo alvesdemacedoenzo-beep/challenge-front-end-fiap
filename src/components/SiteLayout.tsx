@@ -12,6 +12,7 @@ const navigation = [
   { to: "/grupos/novo", label: "Cadastrar grupo" },
   { to: "/desafios", label: "Desafios" },
   { to: "/integrantes", label: "Integrantes" },
+  { to: "/pitch", label: "PITCH" },
   { to: "/faq", label: "FAQ" },
   { to: "/contato", label: "Contato" },
   { to: "/acesso-funcionario", label: "Acesso Funcionário" },

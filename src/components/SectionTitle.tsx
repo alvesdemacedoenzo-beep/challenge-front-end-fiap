@@ -22,7 +22,9 @@ export default function SectionTitle({
         {title}
       </h1>
       {description && (
-        <p className="mt-4 text-base leading-7 text-mint sm:text-lg">{description}</p>
+        <p className="mt-4 text-base leading-7 text-mint sm:text-lg">
+          {description}
+        </p>
       )}
     </div>
   );

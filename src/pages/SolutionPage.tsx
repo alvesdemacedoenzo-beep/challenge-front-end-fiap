@@ -20,12 +20,13 @@ export default function SolutionPage() {
           >
             <InfoCard title={topic.title} className="h-full">
               <p>{topic.summary}</p>
-              <span className="mt-4 block text-sm font-semibold text-leaf">Ver detalhes →</span>
+              <span className="mt-4 block text-sm font-semibold text-leaf">
+                Ver detalhes →
+              </span>
             </InfoCard>
           </Link>
         ))}
       </div>
-
     </div>
   );
 }

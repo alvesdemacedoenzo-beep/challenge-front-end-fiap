@@ -39,14 +39,35 @@ const router = createBrowserRouter([
       { path: "grupos/novo", element: <GroupPage /> },
       { path: "grupos", element: <ApiDirectoryPage /> },
       { path: "grupos/:id", element: <ApiRecordPage kind="group" /> },
-      { path: "funcionarios/usuarios/:id", element: <EmployeeGate><ApiRecordPage kind="user" /></EmployeeGate> },
+      {
+        path: "funcionarios/usuarios/:id",
+        element: (
+          <EmployeeGate>
+            <ApiRecordPage kind="user" />
+          </EmployeeGate>
+        ),
+      },
       { path: "desafios", element: <ChallengesPage /> },
       { path: "integrantes", element: <TeamPage /> },
       { path: "solucao", element: <SolutionPage /> },
       { path: "solucao/:slug", element: <SolutionDetailPage /> },
       { path: "avatar", element: <AvatarPage /> },
-      { path: "acesso-funcionario", element: <EmployeeGate><EmployeeAccessPage /></EmployeeGate> },
-      { path: "gestao", element: <EmployeeGate><AdminManagementPage /></EmployeeGate> },
+      {
+        path: "acesso-funcionario",
+        element: (
+          <EmployeeGate>
+            <EmployeeAccessPage />
+          </EmployeeGate>
+        ),
+      },
+      {
+        path: "gestao",
+        element: (
+          <EmployeeGate>
+            <AdminManagementPage />
+          </EmployeeGate>
+        ),
+      },
       { path: "*", element: <NotFoundPage /> },
     ],
   },
@@ -57,5 +78,5 @@ createRoot(document.getElementById("root")!).render(
     <AuthProvider>
       <RouterProvider router={router} />
     </AuthProvider>
-  </StrictMode>
+  </StrictMode>,
 );

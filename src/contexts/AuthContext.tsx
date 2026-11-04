@@ -1,4 +1,10 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from "react";
 import { getCurrentAccount } from "../services/api";
 import type { AccountUser } from "../services/api";
 
@@ -31,7 +37,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
       .catch((cause: unknown) => {
         if (active) {
           setUser(null);
-          setErrorMessage(cause instanceof Error ? cause.message : "Não foi possível verificar sua sessão.");
+          setErrorMessage(
+            cause instanceof Error
+              ? cause.message
+              : "Não foi possível verificar sua sessão.",
+          );
         }
       })
       .finally(() => {

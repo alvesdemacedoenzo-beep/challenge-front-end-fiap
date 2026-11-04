@@ -10,7 +10,11 @@ export default function SolutionDetailPage() {
   if (!topic) {
     return (
       <div className="mx-auto max-w-3xl px-5 py-24 text-center">
-        <SectionTitle eyebrow="Solução" title="Tópico não encontrado" centered />
+        <SectionTitle
+          eyebrow="Solução"
+          title="Tópico não encontrado"
+          centered
+        />
         <button
           type="button"
           onClick={() => navigate("/solucao")}
@@ -24,7 +28,11 @@ export default function SolutionDetailPage() {
 
   return (
     <article className="mx-auto max-w-4xl px-5 py-16 sm:px-8 md:py-24">
-      <SectionTitle eyebrow="Detalhe da solução" title={topic.title} description={topic.summary} />
+      <SectionTitle
+        eyebrow="Detalhe da solução"
+        title={topic.title}
+        description={topic.summary}
+      />
       <div className="rounded-3xl border border-white/10 bg-forest-soft p-6 sm:p-9">
         <p className="text-lg leading-8 text-mint">{topic.detail}</p>
       </div>

@@ -2,12 +2,36 @@ import { useNavigate } from "react-router-dom";
 import InfoCard from "../components/InfoCard";
 
 const destinations = [
-  { title: "Sobre o projeto", text: "Conheça o propósito e os pilares da Soul Up.", to: "/sobre" },
-  { title: "Nossa solução", text: "Veja como a tecnologia transforma atitudes em impacto.", to: "/solucao" },
-  { title: "Avatar mentor", text: "Descubra como o guia acompanha cada desafio.", to: "/avatar" },
-  { title: "Integrantes", text: "Conheça as pessoas por trás desta iniciativa.", to: "/integrantes" },
-  { title: "Perguntas frequentes", text: "Encontre respostas sobre a plataforma.", to: "/faq" },
-  { title: "Fale com a equipe", text: "Envie uma mensagem para o nosso time.", to: "/contato" },
+  {
+    title: "Sobre o projeto",
+    text: "Conheça o propósito e os pilares da Soul Up.",
+    to: "/sobre",
+  },
+  {
+    title: "Nossa solução",
+    text: "Veja como a tecnologia transforma atitudes em impacto.",
+    to: "/solucao",
+  },
+  {
+    title: "Avatar mentor",
+    text: "Descubra como o guia acompanha cada desafio.",
+    to: "/avatar",
+  },
+  {
+    title: "Integrantes",
+    text: "Conheça as pessoas por trás desta iniciativa.",
+    to: "/integrantes",
+  },
+  {
+    title: "Perguntas frequentes",
+    text: "Encontre respostas sobre a plataforma.",
+    to: "/faq",
+  },
+  {
+    title: "Fale com a equipe",
+    text: "Envie uma mensagem para o nosso time.",
+    to: "/contato",
+  },
 ];
 
 export default function HomePage() {
@@ -25,12 +49,12 @@ export default function HomePage() {
             <span className="block text-leaf">Grande movimento.</span>
           </h1>
           <p className="mt-7 max-w-2xl text-lg leading-8 text-mint">
-            A Soul Up transforma a sustentabilidade em uma experiência social e coletiva,
-            aproximando pessoas, desafios e impacto positivo.
+            A Soul Up transforma a sustentabilidade em uma experiência social e
+            coletiva, aproximando pessoas, desafios e impacto positivo.
           </p>
           <blockquote className="mt-7 max-w-xl border-l-2 border-leaf/70 pl-5 text-base italic leading-7 text-muted">
-            “Unir a vontade de socializar com a vontade de melhorar o mundo de um jeito que
-            não parece lição de casa.”
+            “Unir a vontade de socializar com a vontade de melhorar o mundo de
+            um jeito que não parece lição de casa.”
           </blockquote>
           <div className="mt-9 flex flex-wrap gap-3">
             <button
@@ -63,20 +87,31 @@ export default function HomePage() {
           <div className="flex h-40 w-40 items-center justify-center rounded-[2.5rem] border border-leaf/35 bg-forest-soft text-center text-lg font-bold text-leaf shadow-[0_0_90px_rgba(163,243,107,0.15)] sm:h-48 sm:w-48">
             Sustentabilidade
           </div>
-          <span className="absolute left-[12%] top-[27%] rounded-full border border-white/10 bg-forest-soft px-4 py-2 text-sm text-mint">Ação</span>
-          <span className="absolute right-[5%] top-[44%] rounded-full border border-white/10 bg-forest-soft px-4 py-2 text-sm text-mint">Comunidade</span>
-          <span className="absolute bottom-[20%] left-[15%] rounded-full border border-white/10 bg-forest-soft px-4 py-2 text-sm text-mint">Impacto</span>
+          <span className="absolute left-[12%] top-[27%] rounded-full border border-white/10 bg-forest-soft px-4 py-2 text-sm text-mint">
+            Ação
+          </span>
+          <span className="absolute right-[3%] top-[10%] rounded-full border border-white/10 bg-forest-soft px-4 py-2 text-sm text-mint">
+            Comunidade
+          </span>
+          <span className="absolute bottom-[20%] left-[15%] rounded-full border border-white/10 bg-forest-soft px-4 py-2 text-sm text-mint">
+            Impacto
+          </span>
         </div>
       </section>
 
       <section className="pb-20">
         <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-leaf">Explore</p>
-            <h2 className="mt-2 text-2xl font-bold text-white sm:text-3xl">Um projeto feito para agir junto</h2>
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-leaf">
+              Explore
+            </p>
+            <h2 className="mt-2 text-2xl font-bold text-white sm:text-3xl">
+              Um projeto feito para agir junto
+            </h2>
           </div>
           <p className="max-w-lg text-sm leading-6 text-muted">
-            Desafios sustentáveis, validação comunitária e reconhecimento em uma única jornada.
+            Desafios sustentáveis, validação comunitária e reconhecimento em uma
+            única jornada.
           </p>
         </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -89,7 +124,9 @@ export default function HomePage() {
             >
               <InfoCard title={destination.title}>
                 <span>{destination.text}</span>
-                <span className="mt-4 block text-sm font-semibold text-leaf">Saiba mais →</span>
+                <span className="mt-4 block text-sm font-semibold text-leaf">
+                  Saiba mais →
+                </span>
               </InfoCard>
             </button>
           ))}

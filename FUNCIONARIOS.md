@@ -2,28 +2,32 @@
 
 Execute `npm install` e `npm run dev`, depois abra `/acesso-funcionario` ou use o link **Acesso Funcionário** do menu.
 
-A senha compartilhada inicial solicitada é `123456789` (9 caracteres; o mínimo do Python é 8). A senha é conferida pelo servidor, nunca pelo JavaScript enviado ao navegador. A sessão usa um cookie HttpOnly com duração de 8 horas e pode ser encerrada pelo botão de saída. A rota anterior `/gestao` também exige essa sessão.
+A senha compartilhada é definida em `SOULUP_SENHA_FUNCIONARIOS` no serviço Python do Render. Em 04/11/2026, `12345678` foi aceita pela API publicada. A tela envia a senha ao servidor Node, que chama `POST /auth/funcionarios` no Python e confirma o perfil em `GET /auth/me`. O token Bearer fica em cookie HttpOnly por até uma hora; não é exposto ao JavaScript do navegador. `/gestao` exige essa mesma sessão e o botão de saída revoga o token no Python.
+
+A antiga validação Node de `123456789` foi removida. Erros de conexão/configuração do Python são apresentados como indisponibilidade, sem aceitar senha local nem informar senha incorreta quando o serviço não respondeu.
 
 As seis ferramentas são:
 
 1. Consultar usuários da API Java, com indicação de erro quando o serviço não responde.
-2. Criar desafios com descrição, categoria e pontuação inteira de 1 a 10000.
-3. Ativar/desativar desafios preservando o histórico. Desafios inativos não aparecem para participação.
+2. Criar desafios na API Java com título, descrição, categoria e pontuação inteira de 1 a 10000, confirmando o registro por nova consulta.
+3. Listar, editar e excluir desafios na API Java. Exclusão exige confirmação e nova consulta ao servidor.
 4. Consultar as ações publicadas em **Desafios**, suas evidências, fotos, status e pareceres.
 5. Aprovar/rejeitar ações pendentes com parecer de pelo menos 5 caracteres. Cada ação pode ser analisada uma única vez.
 6. Consultar o ranking local, somando os pontos das ações aprovadas.
 
-Para experimentar o fluxo completo, entre em uma conta na página **Conta**, envie uma ação em **Desafios** e acesse a área de funcionários no mesmo navegador para analisá-la. Cada conta pode enviar uma ação por desafio, conforme o Python. A aprovação libera os pontos no perfil e no ranking. Os registros de conclusão anteriores à inclusão da análise são preservados no perfil.
+O link **Consultar e gerenciar cadastros da API** abre `/gestao`, com cadastro/edição/exclusão de usuários Java, cadastro/listagem/exclusão de grupos e CRUD de desafios. O formulário de usuário Java pede nome, e-mail e senha no cadastro; na edição altera nome/e-mail, conforme o PUT disponível. A senha e o saldo não são alterados por esse PUT.
+
+Para experimentar o fluxo de participação, entre em uma conta Python na página **Conta**, selecione um desafio consultado no Java e envie uma ação. Acesse a área de funcionários no mesmo navegador para analisá-la. Cada conta pode enviar uma ação por desafio Java. A aprovação libera pontos locais no perfil/ranking, mantendo os valores da evidência mesmo se o catálogo mudar. Ações antigas locais permanecem no histórico e não são confundidas com desafios Java de mesmo ID.
 
 ## Armazenamento e integração
 
-As regras locais foram adaptadas do programa Python de terminal. A API Python HTTP agora atende contas, autenticação e consulta de desafios na gestão, mas desafios criados pelos funcionários, ações e fotos continuam no `localStorage` deste navegador, sem sincronização entre dispositivos. As fotos aceitas são JPG, PNG, WebP e GIF de até 2 MB, sujeitas à capacidade de armazenamento do navegador. O ranking não altera pontos nas APIs. Ainda não há votação comunitária no site, portanto não são concedidos os bônus de voto do Python.
+O catálogo e o CRUD de desafios usam Java tanto na gestão quanto na página pública. A API Python HTTP atende contas e autenticação. Ações, fotos, pareceres e ranking continuam no `localStorage`, sem sincronização entre dispositivos. As fotos aceitas são JPG, PNG, WebP e GIF de até 2 MB, sujeitas à capacidade de armazenamento do navegador. O ranking não altera pontos nas APIs. Ainda não há votação comunitária no site.
 
 A senha protege as telas de funcionários e a consulta de usuários por seu endpoint. Os registros locais são dados de demonstração e podem ser alterados pelas ferramentas do navegador; controle de integridade entre usuários/dispositivos exige armazenamento e autorização no backend.
 
-O endpoint `/api/acesso-funcionario` é atendido pelo middleware local no Vite (desenvolvimento e preview) e pela função `api/acesso-funcionario.js` na Vercel. `/api/java/*` encaminha ao Java; os demais endpoints `/api/*` encaminham ao Python.
+O endpoint `/api/acesso-funcionario` é atendido pelo middleware local no Vite (desenvolvimento e preview) e pela função `api/acesso-funcionario.js` na Vercel. O login de conta usa a adaptação equivalente em `/api/auth/*`, com cookie separado. `/api/java/*` encaminha ao Java; os demais endpoints `/api/*` encaminham ao Python.
 
-Opcionalmente, defina `EMPLOYEE_PASSWORD` no ambiente do processo Node ou nas variáveis de ambiente da Vercel para substituir a senha inicial. Não use o prefixo `VITE_` para essa variável. Reinicie o servidor após alterações. `SOULUP_JAVA_API_URL` permite configurar a API Java consultada pelos funcionários; `SOULUP_API_URL` permanece aceito como nome antigo.
+A senha deve ser alterada somente no Python (`SOULUP_SENHA_FUNCIONARIOS`), sem prefixo `VITE_`. `EMPLOYEE_PASSWORD` não é mais utilizado. `SOULUP_PYTHON_API_URL` configura o destino da autenticação; `SOULUP_JAVA_API_URL` configura a consulta de usuários Java e `SOULUP_API_URL` permanece como nome antigo deste último. Reinicie o Vite após mudanças locais e publique uma nova versão da Vercel para atualizar o site online.
 
 ## Verificação
 

@@ -5,6 +5,10 @@
   "outputDirectory": "dist",
   "rewrites": [
     {
+      "source": "/api/auth/:action",
+      "destination": "/api/auth?action=:action"
+    },
+    {
       "source": "/api/java/:path*",
       "destination": "https://challeng-sprin4-java.onrender.com/:path*"
     },

@@ -15,8 +15,8 @@ export default function AvatarPage() {
         </h2>
         <ul className="mt-5 space-y-4 text-sm leading-6 text-mint">
           <li>
-            <strong className="text-leaf">Foco coletivo:</strong> quando o
-            grupo avança, seus membros acumulam pontos juntos.
+            <strong className="text-leaf">Foco coletivo:</strong> quando o grupo
+            avança, seus membros acumulam pontos juntos.
           </li>
           <li>
             <strong className="text-leaf">Validação por proximidade:</strong>{" "}

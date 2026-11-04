@@ -38,9 +38,12 @@ export default function ContactPage() {
       <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr]">
         <aside className="space-y-4">
           <div className="rounded-2xl border border-white/10 bg-forest-soft p-6">
-            <h2 className="text-lg font-bold text-white">Informações da equipe</h2>
+            <h2 className="text-lg font-bold text-white">
+              Informações da equipe
+            </h2>
             <p className="mt-4 text-sm leading-6 text-mint">
-              Acompanhe o projeto e fale com os integrantes pelos perfis listados na página da equipe.
+              Acompanhe o projeto e fale com os integrantes pelos perfis
+              listados na página da equipe.
             </p>
             <a
               className="mt-4 inline-flex font-semibold text-leaf underline-offset-4 hover:underline"
@@ -51,7 +54,9 @@ export default function ContactPage() {
             <p className="mt-3 text-sm text-muted">São Paulo — SP, Brasil</p>
           </div>
           <div className="rounded-2xl border border-white/10 bg-forest-soft p-6">
-            <h2 className="text-lg font-bold text-white">Horário de atendimento</h2>
+            <h2 className="text-lg font-bold text-white">
+              Horário de atendimento
+            </h2>
             <p className="mt-3 text-sm leading-7 text-mint">
               Segunda a sexta: 9h às 18h
               <br />
@@ -69,18 +74,25 @@ export default function ContactPage() {
         >
           <h2 className="text-2xl font-bold text-white">Envie uma mensagem</h2>
           <p className="mt-2 text-sm leading-6 text-muted">
-            Preencha os campos para validar sua mensagem. Este formulário é demonstrativo e não envia nem armazena dados.
+            Preencha os campos para validar sua mensagem. Este formulário é
+            demonstrativo e não envia nem armazena dados.
           </p>
 
           {submitted && (
-            <p role="status" className="mt-5 rounded-xl border border-leaf/30 bg-leaf/10 p-4 text-sm text-leaf">
-              Formulário validado. O envio de mensagens de contato ainda não está disponível; sua mensagem não foi enviada.
+            <p
+              role="status"
+              className="mt-5 rounded-xl border border-leaf/30 bg-leaf/10 p-4 text-sm text-leaf"
+            >
+              Formulário validado. O envio de mensagens de contato ainda não
+              está disponível; sua mensagem não foi enviada.
             </p>
           )}
 
           <div className="mt-6 grid gap-5 sm:grid-cols-2">
             <div>
-              <label className={labelClass} htmlFor="name">Nome completo</label>
+              <label className={labelClass} htmlFor="name">
+                Nome completo
+              </label>
               <input
                 id="name"
                 autoComplete="name"
@@ -89,10 +101,16 @@ export default function ContactPage() {
                 className={inputClass}
                 {...register("name", { required: "Informe seu nome." })}
               />
-              {errors.name && <p role="alert" className="mt-2 text-sm text-red-300">{errors.name.message}</p>}
+              {errors.name && (
+                <p role="alert" className="mt-2 text-sm text-red-300">
+                  {errors.name.message}
+                </p>
+              )}
             </div>
             <div>
-              <label className={labelClass} htmlFor="email">E-mail</label>
+              <label className={labelClass} htmlFor="email">
+                E-mail
+              </label>
               <input
                 id="email"
                 type="email"
@@ -102,15 +120,24 @@ export default function ContactPage() {
                 className={inputClass}
                 {...register("email", {
                   required: "Informe seu e-mail.",
-                  pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: "Informe um e-mail válido." },
+                  pattern: {
+                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                    message: "Informe um e-mail válido.",
+                  },
                 })}
               />
-              {errors.email && <p role="alert" className="mt-2 text-sm text-red-300">{errors.email.message}</p>}
+              {errors.email && (
+                <p role="alert" className="mt-2 text-sm text-red-300">
+                  {errors.email.message}
+                </p>
+              )}
             </div>
           </div>
 
           <div className="mt-5">
-            <label className={labelClass} htmlFor="subject">Assunto</label>
+            <label className={labelClass} htmlFor="subject">
+              Assunto
+            </label>
             <input
               id="subject"
               placeholder="Como podemos ajudar?"
@@ -118,11 +145,17 @@ export default function ContactPage() {
               className={inputClass}
               {...register("subject", { required: "Informe o assunto." })}
             />
-            {errors.subject && <p role="alert" className="mt-2 text-sm text-red-300">{errors.subject.message}</p>}
+            {errors.subject && (
+              <p role="alert" className="mt-2 text-sm text-red-300">
+                {errors.subject.message}
+              </p>
+            )}
           </div>
 
           <div className="mt-5">
-            <label className={labelClass} htmlFor="message">Mensagem</label>
+            <label className={labelClass} htmlFor="message">
+              Mensagem
+            </label>
             <textarea
               id="message"
               rows={5}
@@ -131,10 +164,17 @@ export default function ContactPage() {
               className={`${inputClass} resize-y`}
               {...register("message", {
                 required: "Escreva uma mensagem.",
-                minLength: { value: 10, message: "A mensagem deve ter pelo menos 10 caracteres." },
+                minLength: {
+                  value: 10,
+                  message: "A mensagem deve ter pelo menos 10 caracteres.",
+                },
               })}
             />
-            {errors.message && <p role="alert" className="mt-2 text-sm text-red-300">{errors.message.message}</p>}
+            {errors.message && (
+              <p role="alert" className="mt-2 text-sm text-red-300">
+                {errors.message.message}
+              </p>
+            )}
           </div>
 
           <button

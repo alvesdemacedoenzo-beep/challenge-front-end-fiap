@@ -17,7 +17,10 @@ export default function FaqPage() {
           const isOpen = openIndex === index;
           const answerId = `faq-answer-${index}`;
           return (
-            <article key={item.question} className="rounded-2xl border border-white/10 bg-forest-soft/70">
+            <article
+              key={item.question}
+              className="rounded-2xl border border-white/10 bg-forest-soft/70"
+            >
               <h2>
                 <button
                   type="button"
@@ -33,7 +36,10 @@ export default function FaqPage() {
                 </button>
               </h2>
               {isOpen && (
-                <p id={answerId} className="border-t border-white/10 px-5 py-5 leading-7 text-mint sm:px-6">
+                <p
+                  id={answerId}
+                  className="border-t border-white/10 px-5 py-5 leading-7 text-mint sm:px-6"
+                >
                   {item.answer}
                 </p>
               )}
@@ -42,11 +48,14 @@ export default function FaqPage() {
         })}
       </div>
       <div className="mt-10 rounded-2xl border border-leaf/20 bg-leaf/5 p-6">
-        <h2 className="text-xl font-bold text-white">Transformando atitudes em impacto</h2>
+        <h2 className="text-xl font-bold text-white">
+          Transformando atitudes em impacto
+        </h2>
         <p className="mt-3 leading-7 text-mint">
-          A Soul Up foi criada para mostrar que pequenas ações podem gerar grandes mudanças quando
-          realizadas de forma coletiva. Mais do que uma rede social, a plataforma busca criar uma
-          comunidade engajada em sustentabilidade, reconhecimento e desenvolvimento profissional.
+          A Soul Up foi criada para mostrar que pequenas ações podem gerar
+          grandes mudanças quando realizadas de forma coletiva. Mais do que uma
+          rede social, a plataforma busca criar uma comunidade engajada em
+          sustentabilidade, reconhecimento e desenvolvimento profissional.
         </p>
       </div>
     </div>

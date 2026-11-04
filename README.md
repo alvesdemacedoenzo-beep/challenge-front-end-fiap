@@ -21,13 +21,16 @@ A Soul Up conecta pessoas a ações ambientais por meio de desafios, grupos e re
 | Recurso | Endereço ou situação |
 |---|---|
 | Repositório do front-end | [challenge-front-end-fiap](https://github.com/alvesdemacedoenzo-beep/challenge-front-end-fiap) — conferir acesso público sem login antes de entregar |
+| Fork conectado à Vercel | [ViniciosAlvees/challenge-front-end-fiap](https://github.com/ViniciosAlvees/challenge-front-end-fiap) |
 | Repositório Java | [challeng-sprin4-Java](https://github.com/velascoguzmanvictorhugo-ui/challeng-sprin4-Java) |
 | API Java publicada | [API Soul Up](https://challeng-sprin4-java.onrender.com) |
 | API Python publicada | [API Python Soul Up](https://soulup-api-python.onrender.com) |
 | Deploy na Vercel | [Soul Up](https://soul-up-plum.vercel.app) |
 | Vídeo no YouTube | **Pendente: gravar a demonstração de até 3 minutos e inserir o link acessível.** |
 
-O vídeo ainda é uma pendência da entrega. O frontend foi publicado na Vercel pelo CLI a partir dos arquivos locais; os próximos envios ao GitHub não geram deploy automático nessa configuração.
+O vídeo ainda é uma pendência da entrega. A Vercel está conectada ao fork `ViniciosAlvees/challenge-front-end-fiap`; atualizações da branch `main` publicam o frontend automaticamente.
+
+**Conferência em 04/11/2026:** o site e os repositórios estavam públicos, mas a consulta de grupos Java pelo site retornou HTTP 503, indicando configuração do servidor ou migração do banco. A integração Java precisa ser restabelecida e validada com leitura e escrita reais antes da entrega. Confira o relatório e a tabela completa de penalidades em [ENTREGA_SPRINT4.md](./ENTREGA_SPRINT4.md).
 
 ### Instalação e execução
 
@@ -65,9 +68,9 @@ npm run check:api
 - **Solução e Avatar:** conteúdo e prototipação navegável da proposta, com detalhes em `/solucao/:slug`.
 - **Grupos:** listagem real da API em `/grupos`, detalhe em `/grupos/:id` e cadastro em `/grupos/novo`. O cadastro envia os IDs dos participantes e consulta novamente a API para verificar os vínculos.
 - **Conta e Perfil:** cadastro e autenticação por senha. O login somente é aceito quando `/auth/login` e `/auth/me` confirmam a sessão; não existe entrada apenas por e-mail nem autenticação pelo armazenamento do navegador.
-- **Acesso Funcionário:** consulta de usuários e seus detalhes, criação e ativação local de desafios, consulta e análise local de ações e ranking local. A senha inicial solicitada é `123456789`. Leia [FUNCIONARIOS.md](./FUNCIONARIOS.md).
-- **Gestão da API:** acessível a partir da área de funcionários; apresenta usuários, grupos e desafios e confirma exclusões consultando o servidor novamente.
-- **Desafios:** participação com descrição e foto local, sujeita à aprovação de funcionário. Os pontos locais e os pontos da API são apresentados separadamente no perfil.
+- **Acesso Funcionário:** consulta de usuários e seus detalhes, cadastro/edição/exclusão de desafios na API Java, consulta e análise local de ações e ranking local. A senha é validada pelo Python em `/auth/funcionarios`; `12345678` foi confirmada no serviço em 04/11/2026. Leia [FUNCIONARIOS.md](./FUNCIONARIOS.md).
+- **Gestão da API:** cadastro, listagem, edição de nome/e-mail e exclusão de usuários Java; listagem e exclusão de grupos, com acesso ao formulário de cadastro; cadastro, listagem, edição e exclusão de desafios Java. Toda escrita é confirmada por nova consulta, e exclusões exigem confirmação do usuário.
+- **Desafios:** catálogo consultado na API Java com título, descrição, categoria e pontos. Participação com descrição e foto local, sujeita à aprovação de funcionário. Os pontos locais e os pontos da API são apresentados separadamente no perfil.
 - **Contato:** formulário demonstrativo com validação, sem envio de mensagens.
 
 ### Integração Python e Java
@@ -75,13 +78,19 @@ npm run check:api
 | Operação | API |
 |---|---|
 | Cadastro de conta (`POST /usuarios`), login, sessão e logout (`/auth/*`) | Python |
-| Listagem, detalhes e exclusão de usuários (`/usuarios`) | Java |
+| Cadastro de usuário administrativo, listagem, detalhes, edição e exclusão (`/usuarios`) | Java |
 | Listagem, detalhes, criação e exclusão de grupos (`/grupos`) | Java |
-| Consulta de desafios na gestão (`GET /desafios`) | Python |
+| Catálogo de desafios na página principal e gestão: GET, POST, PUT e DELETE (`/desafios`) | Java |
 
 As contas autenticadas pelo Python e os usuários retornados pelo Java pertencem aos respectivos backends. O frontend não replica contas, senhas, IDs ou exclusões entre os bancos. Os membros de grupos são selecionados exclusivamente da listagem Java; o ID da sessão Python não é usado como ID de usuário Java. Para compartilhar cadastros entre os serviços, os backends precisam implementar essa sincronização.
 
-O código Java consultado na branch `main`, commit `107b64c689ccd649fc51350d87daf0e4f90bbde5`, oferece listagens em `GET /usuarios`, `GET /grupos` e `GET /desafios`; escrita com `POST /usuarios` e `POST /grupos`; exclusão com `DELETE /usuarios?id=...` e `DELETE /grupos?id=...`.
+O Python atual usa token Bearer. As funções Node de `/api/auth/*` e `/api/acesso-funcionario` enviam as credenciais ao Python, confirmam a sessão em `/auth/me` e guardam o token em cookies HttpOnly separados para usuário e funcionário, por até uma hora. O token não é devolvido ao JavaScript do navegador; logout revoga a sessão no Python. Não há senha local de funcionário nem fallback caso o Python recuse o acesso. Configure `SOULUP_SENHA_FUNCIONARIOS` no serviço Python do Render; `EMPLOYEE_PASSWORD` não é usado pelo frontend/Node.
+
+O contrato foi conferido no Java em `main`, commit `e51f5dbcd2310d8cc912f0345fe4f1c2e93167c4`: `GET/POST /usuarios`, `PUT /usuarios` com `id`, `nome` e `email` no JSON; `GET/POST /grupos`; `GET/POST /desafios`, `PUT /desafios` com `id`, `titulo`, `descricao`, `pontos` e `categoria`. As exclusões usam `DELETE /usuarios?id=...`, `/grupos?id=...` e `/desafios?id=...`. Os exemplos das imagens com `/{id}` não correspondem aos controllers atuais; não há tentativa automática de repetir operações em outras URLs.
+
+O cadastro de usuário Java envia `nome`, `email` e `senha`. Pontos são lidos em `pontosAcumulados`, `pontos_acumulados` ou `pontosAdquiridos`. O PUT atual persiste nome/e-mail; alteração de senha e edição de saldo não são oferecidas porque o backend não implementa essas operações. A página **Conta** continua usando o Python para cadastro/login, sem copiar senhas ou criar uma segunda conta automaticamente.
+
+O POST de desafios no Java pode responder com `id: 0`, embora o banco tenha gerado outro ID. O frontend compara as listagens anterior e posterior e só confirma um único registro novo correspondente. Respostas ambíguas ou falhas de consulta exibem orientação para consultar a lista antes de repetir o cadastro.
 
 As telas de detalhe consultam os dados atuais das listagens e selecionam o registro pelo ID. Identificadores inválidos ou inexistentes têm feedback próprio. Respostas inválidas, falhas HTTP e listas vazias são tratadas separadamente, sem fabricar registros.
 
@@ -89,7 +98,9 @@ O pacote histórico em [backend-patches](./backend-patches/README.md) contém co
 
 No Render da API Python, configure `SOULUP_ORIGENS` com as origens permitidas, incluindo `http://localhost:5173` e a URL pública real do frontend, sem barra final e no formato aceito pelo backend. Essa alteração é feita no painel do Render. Com os proxies padrão, o navegador faz as requisições à própria origem do site; ao configurar URLs diretas em `VITE_*`, o backend correspondente precisa permitir CORS e cookies dessa origem.
 
-Desafios, fotos, pareceres e ranking local continuam armazenados neste navegador, sem sincronização automática com o SQLite do Python ou com outros dispositivos. Esses dados de demonstração não substituem a persistência e a autorização do backend. A API Java é usada para as listagens, detalhes e operações de escrita dos cadastros.
+No Java, configure `FRONTEND_ORIGINS` para incluir a origem publicada e as origens locais usadas. O filtro do cadastro verifica a origem das requisições mesmo quando o frontend usa proxy.
+
+O catálogo de desafios é persistido pelo Java. Fotos, evidências, pareceres e ranking de demonstração continuam neste navegador, sem sincronização entre dispositivos. A evidência guarda uma cópia da descrição/pontos consultados no Java; editar ou excluir o desafio depois não altera os pontos das ações já aprovadas. IDs dos antigos desafios locais não são tratados como IDs Java. Esses dados locais não substituem persistência e autorização no backend.
 
 ## Estrutura de pastas
 
@@ -103,6 +114,7 @@ src/
   assets/team/       # Fotos dos integrantes
   components/        # Layout, proteção e feedback reutilizáveis
   contexts/          # Sessão de usuário verificada no servidor
+  hooks/             # Carregamento reutilizável de listas da API
   data/              # Conteúdo e interfaces da equipe
   pages/             # Páginas da SPA
   services/          # Integração HTTP e regras locais tipadas
@@ -130,3 +142,5 @@ Marca e imagens de equipe fornecidas com o projeto. Houve apoio do Codex na impl
 ## Preparação da entrega
 
 Antes de enviar, publique a API corrigida e o front-end, valide o acesso público, preencha os links pendentes e revise [ENTREGA_SPRINT4.md](./ENTREGA_SPRINT4.md). O ZIP deve ter até 50 MB, incluir o código e as configurações e excluir `node_modules`, credenciais, caches e arquivos temporários. O envio deve ocorrer pelo Portal do Aluno.
+
+Em Windows, execute `npm run package:delivery` a partir do repositório Git para gerar `output/Soul-Up-Entrega-4.zip`. O comando confere arquivos essenciais, conteúdo e limite de tamanho e inclui uma cópia textual do histórico Git. Após inserir o vídeo ou alterar o código, gere o pacote novamente. A preparação do ZIP não substitui a validação da API online nem o envio pelo portal.

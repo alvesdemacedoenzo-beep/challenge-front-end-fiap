@@ -45,21 +45,23 @@ export default function AboutPage() {
       <section className="grid gap-6 md:grid-cols-2">
         <InfoCard title="Quem somos">
           <p>
-            A <strong className="text-white">Soul Up</strong> busca transformar a maneira como as
-            pessoas se relacionam com a sustentabilidade. Muitos jovens têm consciência ambiental,
-            mas encontram dificuldades para transformar essa consciência em atitudes concretas
-            quando as experiências são individuais e sem retorno visível.
+            A <strong className="text-white">Soul Up</strong> busca transformar
+            a maneira como as pessoas se relacionam com a sustentabilidade.
+            Muitos jovens têm consciência ambiental, mas encontram dificuldades
+            para transformar essa consciência em atitudes concretas quando as
+            experiências são individuais e sem retorno visível.
           </p>
           <p className="mt-3">
-            Em vez de uma lista de tarefas, a plataforma cria um ambiente para participar de
-            desafios, formar grupos, compartilhar evidências, validar ações, conquistar
-            reconhecimento e acompanhar o próprio desenvolvimento.
+            Em vez de uma lista de tarefas, a plataforma cria um ambiente para
+            participar de desafios, formar grupos, compartilhar evidências,
+            validar ações, conquistar reconhecimento e acompanhar o próprio
+            desenvolvimento.
           </p>
         </InfoCard>
         <InfoCard title="O desafio que identificamos">
-          A intenção de cuidar do meio ambiente nem sempre se transforma em ação. A falta de
-          incentivo social, acompanhamento e validação pode reduzir o engajamento e a confiança em
-          sistemas de pontuação.
+          A intenção de cuidar do meio ambiente nem sempre se transforma em
+          ação. A falta de incentivo social, acompanhamento e validação pode
+          reduzir o engajamento e a confiança em sistemas de pontuação.
         </InfoCard>
       </section>
 
@@ -102,14 +104,16 @@ export default function AboutPage() {
 
       <section className="mt-16 grid gap-6 md:grid-cols-2">
         <InfoCard title="Inovação e modelo de negócio">
-          A inovação está em transformar ações ambientais individuais em experiências coletivas,
-          participativas e verificáveis. O modelo prevê patrocínios de desafios, campanhas de
-          marcas, recursos empresariais e indicadores de impacto.
+          A inovação está em transformar ações ambientais individuais em
+          experiências coletivas, participativas e verificáveis. O modelo prevê
+          patrocínios de desafios, campanhas de marcas, recursos empresariais e
+          indicadores de impacto.
         </InfoCard>
         <InfoCard title="Capacitação profissional">
-          SENAI, SENAC e ETEC são instituições pretendidas como possíveis parceiras educacionais,
-          sem convênios formalizados. A Soul Up não garante vagas, bolsas, gratuidades ou
-          certificados; oportunidades e requisitos dependem de cada instituição.
+          SENAI, SENAC e ETEC são instituições pretendidas como possíveis
+          parceiras educacionais, sem convênios formalizados. A Soul Up não
+          garante vagas, bolsas, gratuidades ou certificados; oportunidades e
+          requisitos dependem de cada instituição.
         </InfoCard>
       </section>
     </div>

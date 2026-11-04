@@ -2,12 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import type { FormEvent } from "react";
 import SectionTitle from "../components/SectionTitle";
-import {
-  ApiError,
-  createGroup,
-  listUsers,
-  getGroup,
-} from "../services/api";
+import { ApiError, createGroup, listUsers, getGroup } from "../services/api";
 import type { ApiUser } from "../services/api";
 
 export default function GroupPage() {
@@ -81,11 +76,21 @@ export default function GroupPage() {
         throw new Error("A API não confirmou a criação do grupo.");
       }
       setCreatedGroupId(createdGroup.id);
-      setSuccessMessage(`Grupo “${createdGroup.nome}” criado. Verificando os membros...`);
+      setSuccessMessage(
+        `Grupo “${createdGroup.nome}” criado. Verificando os membros...`,
+      );
       const persisted = await getGroup(createdGroup.id);
-      const confirmedIds = new Set(persisted.membros?.map((member) => member.id));
-      const confirmed = selectedUsers.every((member) => confirmedIds.has(member.id));
-      setSuccessMessage(confirmed ? `Grupo “${createdGroup.nome}” cadastrado e consultado na API com sucesso.` : `O grupo “${createdGroup.nome}” foi criado, mas a API não confirmou os membros. Não repita o cadastro; o vínculo precisa ser corrigido no servidor.`);
+      const confirmedIds = new Set(
+        persisted.membros?.map((member) => member.id),
+      );
+      const confirmed = selectedUsers.every((member) =>
+        confirmedIds.has(member.id),
+      );
+      setSuccessMessage(
+        confirmed
+          ? `Grupo “${createdGroup.nome}” cadastrado e consultado na API com sucesso.`
+          : `O grupo “${createdGroup.nome}” foi criado, mas a API não confirmou os membros. Não repita o cadastro; o vínculo precisa ser corrigido no servidor.`,
+      );
       setGroupName("");
       setSearch("");
       setUsers([]);
@@ -138,7 +143,10 @@ export default function GroupPage() {
 
         <section>
           <h2 className="text-lg font-bold text-white">Adicionar pessoas</h2>
-          <form onSubmit={findUsers} className="mt-3 flex flex-col gap-3 sm:flex-row">
+          <form
+            onSubmit={findUsers}
+            className="mt-3 flex flex-col gap-3 sm:flex-row"
+          >
             <label htmlFor="user-search" className="sr-only">
               Pesquisar por nome ou e-mail
             </label>
@@ -194,11 +202,14 @@ export default function GroupPage() {
               })}
             </ul>
           )}
-          {hasSearched && !isSearching && users.length === 0 && !errorMessage && (
-            <p className="mt-4 text-sm text-muted">
-              Nenhum usuário encontrado com esse nome ou e-mail.
-            </p>
-          )}
+          {hasSearched &&
+            !isSearching &&
+            users.length === 0 &&
+            !errorMessage && (
+              <p className="mt-4 text-sm text-muted">
+                Nenhum usuário encontrado com esse nome ou e-mail.
+              </p>
+            )}
           {selectedUsers.length > 0 && (
             <p className="mt-4 text-sm text-mint">
               {selectedUsers.length} pessoa(s) selecionada(s):{" "}
@@ -228,8 +239,20 @@ export default function GroupPage() {
         >
           {isCreating ? "Criando grupo..." : "Criar grupo"}
         </button>
-        {createdGroupId !== null && <Link to={`/grupos/${createdGroupId}`} className="block font-semibold text-leaf hover:underline">Ver grupo criado</Link>}
-        <Link to="/grupos" className="inline-flex font-semibold text-leaf hover:underline">Consultar grupos cadastrados</Link>
+        {createdGroupId !== null && (
+          <Link
+            to={`/grupos/${createdGroupId}`}
+            className="block font-semibold text-leaf hover:underline"
+          >
+            Ver grupo criado
+          </Link>
+        )}
+        <Link
+          to="/grupos"
+          className="inline-flex font-semibold text-leaf hover:underline"
+        >
+          Consultar grupos cadastrados
+        </Link>
       </div>
     </div>
   );

@@ -63,7 +63,8 @@ export const teamMembers: TeamMember[] = [
     rm: "573002",
     turma: "1TDSPY",
     photo: viniciosPhoto,
-    linkedin: "https://www.linkedin.com/in/vinicios-alves-dos-santos-434128327/",
+    linkedin:
+      "https://www.linkedin.com/in/vinicios-alves-dos-santos-434128327/",
     github: "https://github.com/ViniciosAlvees",
   },
 ];

@@ -7,6 +7,7 @@
     "dev": "vite",
     "test": "node --test tests/*.test.mjs",
     "check:api": "node scripts/check-api.mjs",
+    "package:delivery": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/preparar-entrega.ps1",
     "build": "tsc -b && vite build",
     "preview": "vite preview"
   },

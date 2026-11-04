@@ -21,11 +21,21 @@ export default function SiteLayout() {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuButton = useRef<HTMLButtonElement>(null);
   const location = useLocation();
-  useEffect(() => { setMenuOpen(false); }, [location.pathname]);
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [location.pathname]);
 
   return (
     <div className="flex min-h-screen flex-col">
-      <header onKeyDown={(event) => { if (event.key === "Escape" && menuOpen) { setMenuOpen(false); menuButton.current?.focus(); } }} className="sticky top-0 z-20 border-b border-white/10 bg-forest/90 backdrop-blur-xl">
+      <header
+        onKeyDown={(event) => {
+          if (event.key === "Escape" && menuOpen) {
+            setMenuOpen(false);
+            menuButton.current?.focus();
+          }
+        }}
+        className="sticky top-0 z-20 border-b border-white/10 bg-forest/90 backdrop-blur-xl"
+      >
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-5 py-4 sm:px-8">
           <NavLink
             to="/"
@@ -33,7 +43,11 @@ export default function SiteLayout() {
             onClick={() => setMenuOpen(false)}
             className="flex items-center gap-3 text-xl font-black tracking-tight text-white"
           >
-            <img className="h-10 w-10 object-contain" src="/icon/souldup.png" alt="" />
+            <img
+              className="h-10 w-10 object-contain"
+              src="/icon/souldup.png"
+              alt=""
+            />
             Soul <span className="text-leaf">Up</span>
           </NavLink>
 

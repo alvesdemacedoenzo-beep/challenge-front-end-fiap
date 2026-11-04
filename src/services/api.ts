@@ -143,15 +143,6 @@ export type ApiChallenge = {
   categoria: string;
 };
 
-export type ApiEmpresa = { 
-  id: number; 
-  nome: string; 
-  endereco: string; 
-};
-
-// ----------------------------------------------------
-// FUNCIONES DE MEMORIA DE SESIÓN (LOGIN)
-// ----------------------------------------------------
 
 const accountStorageKey = "soul-up:account";
 
@@ -181,9 +172,6 @@ export function clearStoredAccount(): void {
   sessionStorage.removeItem(accountStorageKey);
 }
 
-// ----------------------------------------------------
-// ENDPOINTS
-// ----------------------------------------------------
 
 export function registerAccount(
   account: RegisterAccountRequest,
@@ -195,7 +183,7 @@ export async function login(
   credentials: AccountCredentials,
 ): Promise<AccountUser | null> {
   try {
-    // 1. Consulta el servicio Python en /auth/login
+    // 1. Intenta consultar el servicio Python en /auth/login
     const pythonResponse = await apiPost<AccountUser, AccountCredentials>(
       "/auth/login",
       credentials,
@@ -206,7 +194,7 @@ export async function login(
       return pythonResponse;
     }
   } catch {
-    // 2. Fallback Java
+    
     const users = await listUsers();
     const matchedUser = users.find(
       (u) => u.email.trim().toLowerCase() === credentials.email.trim().toLowerCase()
@@ -245,6 +233,8 @@ export async function logout(): Promise<null> {
   return null;
 }
 
+
+
 function parseApiUser(user: any, index: number): ApiUser {
   return {
     id: user.id ?? user.id_usuario ?? index + 1,
@@ -265,6 +255,8 @@ export async function listUsers(): Promise<ApiUser[]> {
 export function deleteUser(id: number): Promise<null> {
   return apiDelete(`/usuarios/${id}`);
 }
+
+
 
 export function createGroup(group: CreateGroupRequest): Promise<ApiGroup | null> {
   return apiPost<ApiGroup, CreateGroupRequest>("/grupos", group);
@@ -287,6 +279,7 @@ export function deleteGroup(id: number): Promise<null> {
   return apiDelete(`/grupos/${id}`);
 }
 
+
 export async function listChallenges(): Promise<ApiChallenge[]> {
   const response = await apiGet<unknown>("/desafios");
   if (!Array.isArray(response)) {
@@ -308,6 +301,8 @@ export function concluirDesafioApi(idUsuario: number, idDesafio: number, pontos:
 export function resgatarRecompensaApi(idUsuario: number, custo: number): Promise<string | null> {
   return apiPost<string, any>(`/recompensas/resgatar?idUsuario=${idUsuario}&custo=${custo}`, {});
 }
+
+export type ApiEmpresa = { id: number; nome: string; endereco: string; };
 
 export async function listEmpresas(): Promise<ApiEmpresa[]> {
   try {

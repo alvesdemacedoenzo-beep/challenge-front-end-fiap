@@ -92,8 +92,6 @@ export function apiDelete(path: string): Promise<null> {
   return request<never>(path, { method: "DELETE" });
 }
 
-
-
 export type AccountCredentials = {
   email: string;
   senha: string;
@@ -109,16 +107,19 @@ export type RegisterAccountRequest = AccountCredentials & {
   nome: string;
 };
 
+// ----------------------------------------------------
+// MODELOS DE DATOS (Mapeados con Oracle DB)
+// ----------------------------------------------------
+
 export type AccountUser = {
   id: number;
   nome: string;
   email: string;
-  pontosAdquiridos?: number;
-  pontuacao?: number;
+  pontosAcumulados: number; 
 };
 
 export type ApiUser = Pick<AccountUser, "id" | "nome" | "email"> & {
-  pontosAdquiridos?: number;
+  pontosAcumulados?: number;
 };
 
 export type CreateGroupRequest = {
@@ -142,6 +143,15 @@ export type ApiChallenge = {
   categoria: string;
 };
 
+export type ApiEmpresa = { 
+  id: number; 
+  nome: string; 
+  endereco: string; 
+};
+
+// ----------------------------------------------------
+// FUNCIONES DE MEMORIA DE SESIÓN (LOGIN)
+// ----------------------------------------------------
 
 const accountStorageKey = "soul-up:account";
 
@@ -155,8 +165,7 @@ export function getStoredAccount(): AccountUser | null {
       id: parsedAccount.id,
       nome: parsedAccount.nome,
       email: parsedAccount.email,
-      pontosAdquiridos: parsedAccount.pontosAdquiridos ?? 0,
-      pontuacao: parsedAccount.pontuacao ?? 0,
+      pontosAcumulados: parsedAccount.pontosAcumulados ?? 0,
     };
   } catch {
     sessionStorage.removeItem(accountStorageKey);
@@ -172,6 +181,9 @@ export function clearStoredAccount(): void {
   sessionStorage.removeItem(accountStorageKey);
 }
 
+// ----------------------------------------------------
+// ENDPOINTS
+// ----------------------------------------------------
 
 export function registerAccount(
   account: RegisterAccountRequest,
@@ -183,7 +195,7 @@ export async function login(
   credentials: AccountCredentials,
 ): Promise<AccountUser | null> {
   try {
-    // 1. Intenta consultar el servicio Python en /auth/login
+    // 1. Consulta el servicio Python en /auth/login
     const pythonResponse = await apiPost<AccountUser, AccountCredentials>(
       "/auth/login",
       credentials,
@@ -194,7 +206,7 @@ export async function login(
       return pythonResponse;
     }
   } catch {
-    // 2. Si Python aún no está activo, valida temporalmente contra los usuarios de Oracle (vía Java)
+    // 2. Fallback Java
     const users = await listUsers();
     const matchedUser = users.find(
       (u) => u.email.trim().toLowerCase() === credentials.email.trim().toLowerCase()
@@ -208,7 +220,7 @@ export async function login(
       id: matchedUser.id,
       nome: matchedUser.nome,
       email: matchedUser.email,
-      pontosAdquiridos: matchedUser.pontosAdquiridos ?? 0,
+      pontosAcumulados: matchedUser.pontosAcumulados ?? 0,
     };
     storeAccount(account);
     return account;
@@ -233,14 +245,12 @@ export async function logout(): Promise<null> {
   return null;
 }
 
-
-
 function parseApiUser(user: any, index: number): ApiUser {
   return {
     id: user.id ?? user.id_usuario ?? index + 1,
     nome: user.nome || "Usuário sem nome",
     email: user.email || "Sem e-mail",
-    pontosAdquiridos: user.pontosAdquiridos ?? user.pontos ?? 0,
+    pontosAcumulados: user.pontos_acumulados ?? user.pontosAcumulados ?? user.pontos ?? 0,
   };
 }
 
@@ -256,8 +266,6 @@ export function deleteUser(id: number): Promise<null> {
   return apiDelete(`/usuarios/${id}`);
 }
 
-
-
 export function createGroup(group: CreateGroupRequest): Promise<ApiGroup | null> {
   return apiPost<ApiGroup, CreateGroupRequest>("/grupos", group);
 }
@@ -271,14 +279,13 @@ export async function listGroups(): Promise<ApiGroup[]> {
     id: group.id ?? group.id_grupo ?? index + 1,
     nome: group.nome || "Grupo sem nome",
     dataCriacao: group.dataCriacao || group.data_criacao || new Date().toLocaleDateString("pt-BR"),
-    pontosAcumulados: group.pontosAcumulados ?? group.pontos ?? 0,
+    pontosAcumulados: group.pontos_acumulados ?? group.pontosAcumulados ?? group.pontos ?? 0,
   }));
 }
 
 export function deleteGroup(id: number): Promise<null> {
   return apiDelete(`/grupos/${id}`);
 }
-
 
 export async function listChallenges(): Promise<ApiChallenge[]> {
   const response = await apiGet<unknown>("/desafios");
@@ -292,4 +299,26 @@ export async function listChallenges(): Promise<ApiChallenge[]> {
     pontos: d.pontos ?? 0,
     categoria: d.categoria || "Geral",
   }));
+}
+
+export function concluirDesafioApi(idUsuario: number, idDesafio: number, pontos: number): Promise<string | null> {
+  return apiPost<string, any>(`/acoes/concluir?idUsuario=${idUsuario}&idDesafio=${idDesafio}&pontos=${pontos}`, {});
+}
+
+export function resgatarRecompensaApi(idUsuario: number, custo: number): Promise<string | null> {
+  return apiPost<string, any>(`/recompensas/resgatar?idUsuario=${idUsuario}&custo=${custo}`, {});
+}
+
+export async function listEmpresas(): Promise<ApiEmpresa[]> {
+  try {
+    const response = await apiGet<unknown>("/empresas");
+    if (!Array.isArray(response)) return [];
+    return response.map((emp: any) => ({
+      id: emp.id ?? emp.id_empresa,
+      nome: emp.nome || "Empresa Parceira",
+      endereco: emp.endereco || "",
+    }));
+  } catch (error) {
+    return []; 
+  }
 }

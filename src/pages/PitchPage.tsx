@@ -24,7 +24,17 @@ export default function PitchPage() {
               {pitch.title}
             </h2>
 
-            {pitch.videoSrc ? (
+            {pitch.youtubeVideoId ? (
+              <iframe
+                src={`https://www.youtube-nocookie.com/embed/${pitch.youtubeVideoId}`}
+                title={`Vídeo ${pitch.title}`}
+                loading="lazy"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerPolicy="strict-origin-when-cross-origin"
+                allowFullScreen
+                className="aspect-video w-full rounded-xl border-0 bg-black"
+              />
+            ) : pitch.videoSrc ? (
               <video
                 controls
                 preload="metadata"

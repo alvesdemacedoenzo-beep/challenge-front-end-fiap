@@ -11,7 +11,32 @@ import {
 
 export default async function employeeAccess(req, res) {
   try {
+    const url = new URL(req.url, "http://localhost");
     if (["POST", "DELETE"].includes(req.method)) requireSameOrigin(req);
+    if (req.method === "DELETE" && url.searchParams.get("recurso") === "grupos") {
+      await getSession(req, "funcionario");
+      const rawId = url.searchParams.get("id");
+      const id = Number(rawId);
+      if (!/^[1-9]\d*$/.test(rawId || "") || !Number.isSafeInteger(id))
+        throw new SessionError("Informe um identificador de grupo válido.", 400);
+      const base = (
+        process.env.SOULUP_JAVA_API_URL ||
+        process.env.SOULUP_API_URL ||
+        "https://challeng-sprin4-java.onrender.com"
+      ).replace(/\/$/, "");
+      const response = await fetch(`${base}/grupos?id=${id}`, {
+        method: "DELETE",
+        headers: { Accept: "application/json" },
+        signal: AbortSignal.timeout(45000),
+      });
+      if (!response.ok)
+        return sendJson(res, [404, 409].includes(response.status) ? response.status : 502, {
+          message: response.status === 409
+            ? "O grupo possui vínculos que impedem a exclusão."
+            : `Não foi possível excluir o grupo (HTTP ${response.status}). Atualize a lista antes de tentar novamente.`,
+        });
+      return sendJson(res, 200, { deleted: true });
+    }
     if (req.method === "POST") {
       const body = await readJsonBody(req);
       return sendJson(
@@ -29,7 +54,6 @@ export default async function employeeAccess(req, res) {
       return sendJson(res, 405, { message: "Método não permitido." });
     }
     await getSession(req, "funcionario");
-    const url = new URL(req.url, "http://localhost");
     if (url.searchParams.get("recurso") === "usuarios") {
       const base = (
         process.env.SOULUP_JAVA_API_URL ||

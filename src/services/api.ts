@@ -395,11 +395,19 @@ export async function getGroup(id: number): Promise<ApiGroup> {
   return group;
 }
 export async function deleteGroup(id: number): Promise<null> {
-  await request<unknown>(
-    `/grupos?id=${identifier(id)}`,
-    { method: "DELETE" },
-    "java",
-  );
+  const response = await fetch(
+    `/api/acesso-funcionario?recurso=grupos&id=${identifier(id)}`,
+    { method: "DELETE", credentials: "same-origin", signal: AbortSignal.timeout(90000) },
+  ).catch(() => {
+    throw new Error("Não foi possível confirmar a exclusão. Atualize os grupos antes de tentar novamente.");
+  });
+  const body = await response.json().catch(() => {
+    throw new Error("O servidor não confirmou a exclusão. Atualize os grupos antes de tentar novamente.");
+  });
+  if (!response.ok)
+    throw new ApiError(body?.message || "Não foi possível excluir o grupo.", response.status);
+  if (body?.deleted !== true)
+    throw new Error("O servidor não confirmou a exclusão. Atualize os grupos antes de tentar novamente.");
   return null;
 }
 export async function listChallenges(): Promise<ApiChallenge[]> {

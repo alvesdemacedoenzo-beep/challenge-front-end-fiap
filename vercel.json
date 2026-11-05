@@ -5,6 +5,10 @@
   "outputDirectory": "dist",
   "rewrites": [
     {
+      "source": "/api/java/grupos",
+      "destination": "/api/java-grupos"
+    },
+    {
       "source": "/api/auth/:action",
       "destination": "/api/auth?action=:action"
     },

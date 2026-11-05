@@ -10,7 +10,7 @@ A senha compartilhada é definida em `SOULUP_SENHA_FUNCIONARIOS` no serviço Pyt
 
 A antiga validação Node de `123456789` foi removida. Erros de conexão/configuração do Python são apresentados como indisponibilidade, sem aceitar senha local nem informar senha incorreta quando o serviço não respondeu.
 
-As seis ferramentas são:
+As sete ferramentas são:
 
 1. Consultar usuários da API Java, com indicação de erro quando o serviço não responde.
 2. Criar desafios na API Java com título, descrição, categoria e pontuação inteira de 1 a 10000, confirmando o registro por nova consulta.
@@ -18,6 +18,11 @@ As seis ferramentas são:
 4. Consultar as ações publicadas em **Desafios**, suas evidências, fotos, status e pareceres.
 5. Aprovar/rejeitar ações pendentes com parecer de pelo menos 5 caracteres. Cada ação pode ser analisada uma única vez.
 6. Consultar o ranking local, somando os pontos das ações aprovadas.
+7. Consultar/excluir grupos, com confirmação pelo nome e ID, bloqueio durante o envio e nova consulta para confirmar a remoção.
+
+A opção **Consultar/excluir grupos** está no painel de funcionários e a exclusão também está disponível na seção **Grupos** de `/gestao`. O servidor confirma a sessão e o perfil `funcionario` no Python antes de encaminhar `DELETE /grupos?id=...` ao Java. A exclusão usa `/api/acesso-funcionario?recurso=grupos&id=...`, preservando a sessão do funcionário; o proxy público `/api/java/grupos` recusa `DELETE`. A listagem e o cadastro públicos continuam disponíveis.
+
+Essa proteção vale para os endpoints deste site. O serviço Java externo precisa aplicar autorização no próprio `DELETE /grupos` para impedir chamadas diretas à sua URL pública; este repositório não contém o código desse serviço e esta alteração não modifica sua implantação.
 
 O link **Consultar e gerenciar cadastros da API** abre `/gestao`, com cadastro/edição/exclusão de usuários Java, cadastro/listagem/exclusão de grupos e CRUD de desafios. O formulário de usuário Java pede nome, e-mail e senha no cadastro; na edição altera nome/e-mail, conforme o PUT disponível. A senha e o saldo não são alterados por esse PUT.
 

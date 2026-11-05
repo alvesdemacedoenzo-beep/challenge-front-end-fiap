@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import SectionTitle from "../components/SectionTitle";
 import ChallengeManagement from "../components/ChallengeManagement";
+import GroupManagement from "../components/GroupManagement";
 import { ApiError } from "../services/api";
 import type { ApiUser } from "../services/api";
 import { checkEmployeeAccess, listEmployeeUsers } from "../services/employee";
@@ -19,6 +20,7 @@ const options = [
   "Consultar ações",
   "Aprovar/rejeitar ação",
   "Ranking local",
+  "Consultar/excluir grupos",
 ];
 const inputClass =
   "mt-2 w-full rounded-xl border border-white/20 bg-forest px-4 py-3 text-white outline-none focus:border-leaf";
@@ -224,6 +226,8 @@ export default function EmployeeAccessPage() {
               initialCreate={selected === 1}
             />
           )}
+
+          {selected === 6 && <GroupManagement />}
 
           {(selected === 3 || selected === 4) &&
             (visibleActions.length ? (

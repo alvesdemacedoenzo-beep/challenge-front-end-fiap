@@ -3,6 +3,7 @@ type Pitch = {
   title: string;
   videoSrc: string;
   youtubeUrl: string;
+  youtubeVideoId?: string;
 };
 
 // Preencha videoSrc com o caminho do vídeo e youtubeUrl com o link do YouTube.
@@ -12,12 +13,14 @@ export const pitches: Pitch[] = [
     id: "python",
     title: "PITCH PYTHON",
     videoSrc: "",
-    youtubeUrl: "",
+    youtubeUrl: "https://youtu.be/MQaApM-Mmd4",
+    youtubeVideoId: "MQaApM-Mmd4",
   },
   {
     id: "frontend",
     title: "PITCH FRONTEND",
     videoSrc: "",
-    youtubeUrl: "",
+    youtubeUrl: "https://youtu.be/KheioXjjurU",
+    youtubeVideoId: "KheioXjjurU",
   },
 ];

@@ -187,15 +187,27 @@ test("group creation sends selected members and verifies a real identifier", asy
   assert.equal(calls[0].url, "http://localhost:5173/api/java/grupos");
   assert.equal(calls[0].credentials, "omit");
 });
-test("deletion follows the Java query parameter contract", async () => {
-  mock([{ status: 204 }, { status: 204 }, { status: 204 }]);
+test("group deletion uses the employee session while other deletions follow the Java contract", async () => {
+  mock([{ status: 204 }, { body: { deleted: true } }, { status: 204 }]);
   await deleteUser(1);
   await deleteGroup(7);
   await deleteChallenge(9);
   assert.equal(calls[0].url, "http://localhost:5173/api/java/usuarios?id=1");
-  assert.equal(calls[1].url, "http://localhost:5173/api/java/grupos?id=7");
+  assert.equal(calls[1].url, "/api/acesso-funcionario?recurso=grupos&id=7");
+  assert.equal(calls[1].credentials, "same-origin");
   assert.equal(calls[2].url, "http://localhost:5173/api/java/desafios?id=9");
   assert.ok(calls.every((call) => call.method === "DELETE"));
+});
+
+test("group deletion does not accept forbidden, expired, or unconfirmed responses", async () => {
+  for (const status of [401, 403, 409, 502]) {
+    mock([{ status, body: { message: "Exclusão recusada" } }]);
+    await assert.rejects(deleteGroup(7), (error) => error instanceof ApiError && error.status === status);
+  }
+  mock([{ body: { authenticated: false } }]);
+  await assert.rejects(deleteGroup(7), /não confirmou a exclusão/);
+  mock([{ status: 204 }]);
+  await assert.rejects(deleteGroup(7), /não confirmou a exclusão/);
 });
 
 test("accepts Java user score names without losing accumulated points", () => {

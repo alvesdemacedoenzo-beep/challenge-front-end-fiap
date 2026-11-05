@@ -4,6 +4,7 @@ import { randomBytes } from "node:crypto";
 import { after, before, beforeEach, test } from "node:test";
 import employeeAccess from "../server/employee-access.mjs";
 import auth from "../server/auth.mjs";
+import javaGroups from "../server/java-groups.mjs";
 
 let server,
   upstream,
@@ -13,7 +14,8 @@ let server,
   upstreamFailure,
   profileOverride,
   malformedToken,
-  javaUsers;
+  javaUsers,
+  groupDeleteStatus;
 const originalPython = process.env.SOULUP_PYTHON_API_URL;
 const originalJava = process.env.SOULUP_JAVA_API_URL;
 function json(res, status, body) {
@@ -32,6 +34,10 @@ before(async () => {
       authorization: req.headers.authorization,
     });
     if (req.url === "/java/usuarios") return json(res, 200, javaUsers);
+    if (req.url === "/java/grupos?id=7" && req.method === "DELETE") {
+      res.writeHead(groupDeleteStatus);
+      return res.end();
+    }
     if (upstreamFailure)
       return json(res, 503, { erro: "Serviço indisponível." });
     if (["/auth/funcionarios", "/auth/login"].includes(req.url)) {
@@ -77,6 +83,7 @@ before(async () => {
   server = createServer((req, res) =>
     req.url.startsWith("/api/acesso-funcionario")
       ? employeeAccess(req, res)
+      : req.url.startsWith("/api/java/grupos") ? javaGroups(req, res)
       : auth(req, res),
   );
   await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
@@ -89,6 +96,7 @@ beforeEach(() => {
   profileOverride = null;
   malformedToken = false;
   javaUsers = [];
+  groupDeleteStatus = 204;
 });
 after(async () => {
   await Promise.all([
@@ -108,6 +116,54 @@ const login = (senha = "12345678", path = staffPath) =>
     body: JSON.stringify({ senha, email: "pessoa@example.test" }),
   });
 const cookieOf = (response) => response.headers.get("set-cookie").split(";")[0];
+
+test("group deletion rejects anonymous users, account sessions, expired sessions, and wrong roles", async () => {
+  const path = base + staffPath + "?recurso=grupos&id=7";
+  assert.equal((await fetch(path, { method: "DELETE" })).status, 401);
+  const account = cookieOf(await login("12345678", "/api/auth/login"));
+  assert.equal((await fetch(path, { method: "DELETE", headers: { Cookie: account } })).status, 401);
+  const employee = cookieOf(await login());
+  profileOverride = { perfil: "usuario" };
+  assert.equal((await fetch(path, { method: "DELETE", headers: { Cookie: employee } })).status, 403);
+  profileOverride = null;
+  sessions.clear();
+  assert.equal((await fetch(path, { method: "DELETE", headers: { Cookie: employee } })).status, 401);
+  assert.ok(!calls.some((call) => call.path.startsWith("/java/grupos")));
+});
+
+test("verified employees delete a Java group without logging out", async () => {
+  const cookie = cookieOf(await login());
+  const response = await fetch(base + staffPath + "?recurso=grupos&id=7", { method: "DELETE", headers: { Cookie: cookie } });
+  assert.equal(response.status, 200);
+  assert.deepEqual(await response.json(), { deleted: true });
+  assert.equal(response.headers.get("set-cookie"), null);
+  assert.deepEqual(calls.at(-1), { path: "/java/grupos?id=7", method: "DELETE", body: null, authorization: undefined });
+  assert.equal((await fetch(base + staffPath, { headers: { Cookie: cookie } })).status, 200);
+});
+
+test("group deletion rejects cross-origin requests and invalid IDs before deleting upstream", async () => {
+  const cookie = cookieOf(await login());
+  for (const id of ["0", "-1", "7.5", "abc", "9007199254740992", ""]) {
+    assert.equal((await fetch(base + staffPath + `?recurso=grupos&id=${id}`, { method: "DELETE", headers: { Cookie: cookie } })).status, 400);
+  }
+  assert.equal((await fetch(base + staffPath + "?recurso=grupos&id=7", { method: "DELETE", headers: { Cookie: cookie, Origin: "https://other.example" } })).status, 403);
+  assert.ok(!calls.some((call) => call.path.startsWith("/java/grupos")));
+});
+
+test("Java deletion failures are not reported as successful", async () => {
+  const cookie = cookieOf(await login());
+  for (const status of [404, 409, 500]) {
+    groupDeleteStatus = status;
+    const response = await fetch(base + staffPath + "?recurso=grupos&id=7", { method: "DELETE", headers: { Cookie: cookie } });
+    assert.equal(response.status, status === 500 ? 502 : status);
+    assert.notEqual((await response.json()).deleted, true);
+  }
+});
+
+test("the public Java proxy never forwards group deletion", async () => {
+  assert.equal((await fetch(base + "/api/java/grupos?id=7", { method: "DELETE" })).status, 403);
+  assert.equal(calls.length, 0);
+});
 
 test("anonymous employee access and Java user lookup require a verified Python session", async () => {
   assert.equal((await fetch(base + staffPath)).status, 401);

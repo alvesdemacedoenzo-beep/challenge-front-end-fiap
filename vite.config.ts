@@ -3,6 +3,7 @@ import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import employeeAccess from "./server/employee-access.mjs";
 import auth from "./server/auth.mjs";
+import javaGroups from "./server/java-groups.mjs";
 
 const employeeApi = {
   name: "employee-api",
@@ -10,6 +11,8 @@ const employeeApi = {
     server.middlewares.use((req, res, next) => {
       if (req.url?.split("?")[0] === "/api/acesso-funcionario") {
         void employeeAccess(req, res);
+      } else if (/^\/api\/java\/grupos\/?$/i.test(req.url?.split("?")[0] || "")) {
+        void javaGroups(req, res);
       } else if (
         /^\/api\/auth\/(login|me|logout)$/.test(req.url?.split("?")[0] || "")
       ) {
@@ -21,6 +24,8 @@ const employeeApi = {
     server.middlewares.use((req, res, next) => {
       if (req.url?.split("?")[0] === "/api/acesso-funcionario") {
         void employeeAccess(req, res);
+      } else if (/^\/api\/java\/grupos\/?$/i.test(req.url?.split("?")[0] || "")) {
+        void javaGroups(req, res);
       } else if (
         /^\/api\/auth\/(login|me|logout)$/.test(req.url?.split("?")[0] || "")
       ) {
